@@ -1,0 +1,36 @@
+.carousel-inner img {
+    max-height: 800px; /* Ajuste cette valeur selon tes besoins */
+    object-fit: scale-down; /* Pour que l'image reste proportionnelle */
+    background-color: cyan;
+  }
+
+
+.textefixe {
+    background-image:url(../IMAGE/CARACC/bg2.jpg);
+    background-size: cover;
+    color: white;
+}
+
+/* Harmonisation du style des sections Catégorie et Highlander */
+.categorie .card, .highlander .card {
+  width: 18rem;
+  margin-bottom: 20px;
+}
+
+.categorie .card-title, .highlander .card-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.categorie .btn-primary, .highlander .btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.categorie .highlander-title, .highlander .highlander-title {
+  text-align: left;
+  font-size: 24px;
+  font-weight: bold;
+  text-decoration: underline;
+  margin-bottom: 20px;
+}
