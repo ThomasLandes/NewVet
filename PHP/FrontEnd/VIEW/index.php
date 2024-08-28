@@ -40,7 +40,7 @@ $dbh = connexion_bdd();
                 echo '<div class="carousel-item ' . $active . '">';
                 echo '<img src="' . $carouselDir . $image . '" class="d-block w-100" alt="' . htmlspecialchars($image) . '">';
                 echo '</div>';
-                $active = ''; // Désactiver 'active' après la première image
+                $active = ''; // Désactive 'active' après la première image
             }
             ?>
         </div>
@@ -66,7 +66,7 @@ $dbh = connexion_bdd();
     <!-- CATEGORIE -->
     <?php
     // Récupérer les catégories mises en avant
-    $categories = recupCategoriesLimit($dbh, 3);
+    $categories = recupCategoriesHighlight($dbh);
     ?>
     <div class="container text-center categorie">
         <p class="highlander-title">NOS CATEGORIES À LA UNE</p>
@@ -99,7 +99,7 @@ $dbh = connexion_bdd();
                         <img src="<?php echo htmlspecialchars($highlander['image_lien']); ?>" class="card-img-top" alt="<?php echo htmlspecialchars($highlander['produit_nom']); ?>">
                         <div class="card-body">
                             <h5 class="card-title"><?php echo htmlspecialchars($highlander['produit_nom']); ?></h5>
-                            <a href="produit.php?id=<?php echo htmlspecialchars($highlander['produit_id']); ?>" class="btn btn-primary">Découvrir</a>
+                            <a href="detailproduit.php?id=<?php echo htmlspecialchars($highlander['produit_id']); ?>" class="btn btn-primary">Découvrir</a>
                         </div>
                     </div>
                 </div>

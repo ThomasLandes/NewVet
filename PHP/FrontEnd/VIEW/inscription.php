@@ -5,7 +5,9 @@ session_start(); // Démarrer la session
 include '../../Fonction/element.php';
 include '../../Fonction/conf.php';
 include '../../Fonction/mail.php'; 
-
+include '../../Fonction/db.php'; 
+// Connexion à la base de données
+$dbh = connexion_bdd();
 $errorMessage = ''; // Variable pour stocker les messages d'erreur
 $successMessage = ''; // Variable pour stocker le message de succès
 
@@ -18,8 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
         // Validation du mot de passe (au moins 12 caractères, une majuscule, un chiffre, un caractère spécial)
         if (preg_match('/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{12,}$/', $password)) {
-            // Connexion à la base de données
-            $dbh = connexion_bdd();
+
 
             // Vérifier si l'email est déjà utilisé
             $stmt = $dbh->prepare("SELECT utilisateur_id FROM utilisateur WHERE utilisateur_email = :email");

@@ -48,14 +48,14 @@ Installation
 Cloner le dépôt :
 
 
-git clone https://github.com/votre-nom-utilisateur/newvet.git
+git clone https://github.com/ThomasLandes/newvet.git
 
 cd newvet
 
 Configurer la base de données :
 
 
-Importez le fichier newvet.sql (ou un fichier similaire) pour créer les tables nécessaires.
+Creez une BDD puis importez le fichier newvet.sql (ou un fichier similaire) pour créer les tables nécessaires.
 
 Mettez à jour les informations de connexion à la base de données dans fonction/conf.php.
 

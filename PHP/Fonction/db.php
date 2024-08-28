@@ -47,6 +47,23 @@ function recupDetailImage($dbh, $produitId)
 }
 
 
+
+function recupProduitsParCategorie($dbh, $categorieId)
+{
+        $sql = "SELECT p.produit_id, p.produit_nom, p.produit_prix, p.produit_stock, 
+                       MIN(i.image_lien) AS image_lien
+                FROM produit p
+                JOIN illustration_produit ip ON p.produit_id = ip.produit_id
+                JOIN image i ON ip.image_id = i.image_id
+                WHERE p.categorie_id = :categorie_id
+                GROUP BY p.produit_id";
+        $stmt = $dbh->prepare($sql);
+        $stmt->bindParam(':categorie_id', $categorieId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
 function recupDetailCategorie($dbh, $categorieId)
 {
         $sql = "SELECT categorie_nom, categorie_desc, categorie_image
@@ -64,24 +81,9 @@ function recupDetailCategorie($dbh, $categorieId)
         return $categorie;
 }
 
-function recupProduitsParCategorie($dbh, $categorieId)
-{
-        $sql = "SELECT p.produit_id, p.produit_nom, p.produit_prix, p.produit_stock, 
-                       MIN(i.image_lien) AS image_lien
-                FROM produit p
-                JOIN illustration_produit ip ON p.produit_id = ip.produit_id
-                JOIN image i ON ip.image_id = i.image_id
-                WHERE p.categorie_id = :categorie_id
-                GROUP BY p.produit_id";
-        $stmt = $dbh->prepare($sql);
-        $stmt->bindParam(':categorie_id', $categorieId, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
-
 function recupCategories($dbh)
 {
-        $sql = "SELECT categorie_id, categorie_nom, categorie_image FROM categorie";
+        $sql = "SELECT * FROM categorie";
         $stmt = $dbh->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -94,6 +96,24 @@ function recupCategoriesLimit($dbh, $i)
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
+function recupCategoriesHighlight($dbh)
+{
+        $sql = "SELECT categorie_id, categorie_nom, categorie_image FROM categorie WHERE categorie_highlight = 1";
+        $stmt = $dbh->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function recupCategoriesParID($dbh,$id)
+{
+        $sql = "SELECT * FROM categorie WHERE categorie_id = $id";
+        $stmt = $dbh->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+
 
 
 function recupHighlanders($dbh)

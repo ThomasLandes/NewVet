@@ -4,6 +4,9 @@ session_start(); // Démarrer la session
 // Inclure les fonctions
 include '../../Fonction/element.php';
 include '../../Fonction/conf.php';
+include '../../Fonction/db.php';
+$dbh = connexion_bdd();
+
 
 $errorMessage = ''; // Variable pour stocker le message d'erreur
 
@@ -14,9 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $password = trim($_POST['password']);
 
     if (!empty($email) && !empty($password)) {
-        // Connexion à la base de données
-        $dbh = connexion_bdd();
-
+       
         // Préparer la requête SQL pour récupérer l'utilisateur
         $stmt = $dbh->prepare("SELECT utilisateur_id, utilisateur_mdp FROM utilisateur WHERE utilisateur_email = :email");
         $stmt->bindParam(':email', $email, PDO::PARAM_STR);

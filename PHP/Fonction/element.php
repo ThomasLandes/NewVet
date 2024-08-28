@@ -133,7 +133,7 @@ function BO_afficherNavbar() {
 function BO_ContenuDashboardOuverture(){
   echo '
   <!-- Contenu principal avec largeur ajustée -->
-  <main class="col-md-10 ms-sm-auto col-lg-10 px-md-4">
+  <main class="col-md-10 col-lg-10 px-md-4">
     <!-- Contenu dynamique du back office -->
     <div id="dashboard-content">';
 }
@@ -158,5 +158,6 @@ function BO_headerElementPrint()
         height: 100vh;
       }
     </style>
+    <link rel="stylesheet" href="../CSS/BO_Tableau.css">
 ';
 }
