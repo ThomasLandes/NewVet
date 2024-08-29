@@ -124,6 +124,11 @@ function BO_afficherNavbar() {
                   <i class="bi bi-receipt"></i> Commande
                 </a>
               </li>
+              <li class="nav-item">
+                <a class="nav-link" href="../VIEW">
+                  <i class="bi bi-arrow-bar-left"></i> Retour au site
+                </a>
+              </li>
             </ul>
           </div>
         </nav>';
@@ -160,4 +165,59 @@ function BO_headerElementPrint()
     </style>
     <link rel="stylesheet" href="../CSS/BO_Tableau.css">
 ';
+}
+
+function BO_ScriptAjoutSectionMateriau() {
+  echo '<script>
+    // Fonction pour ajouter dynamiquement un champ de matériau
+    function addMaterialField() {
+      const materialContainer = document.getElementById("material-container");
+      const newMaterial = document.createElement("div");
+      newMaterial.className = "row mb-3 align-items-center material-row";
+      newMaterial.innerHTML = `
+  <div class="col-md-6">
+    <select class="form-select" name="material[]" required>
+      <option value="">Choisir un matériau</option>
+      <option value="3">Coton</option>
+      <option value="6">Elastane</option>
+      <option value="5">Lyocell</option>
+      <option value="7">Modal</option>
+      <option value="2">Polyamide</option>
+      <option value="4">Polyester</option>
+      <option value="1">Viscose</option>
+    </select>
+  </div>
+  <div class="col-md-4">
+    <input type="number" class="form-control" name="percentage[]" placeholder="%" min="0" max="100" required>
+  </div>
+  <div class="col-md-2">
+    <button type="button" class="btn btn-danger btn-sm" onclick="removeMaterialField(this)">&#10005;</button>
+  </div>
+`;
+      materialContainer.appendChild(newMaterial);
+    }';}
+
+    function BO_ScriptAjoutSectionImage() {
+    echo '// Fonction pour ajouter dynamiquement un champ d\'image
+    function addImageField() {
+      const imageContainer = document.getElementById("image-container");
+      const newImageField = document.createElement("div");
+      newImageField.className = "mb-2 d-flex align-items-center image-row";
+      newImageField.innerHTML = `
+        <input type="file" class="form-control" name="productImage[]" required>
+        <button type="button" class="btn btn-danger btn-sm ms-2" onclick="removeImageField(this)">&#10005;</button>
+      `;
+      imageContainer.appendChild(newImageField);
+    }
+
+    // Fonction pour supprimer un champ de matériau
+    function removeMaterialField(button) {
+      button.closest(".material-row").remove();
+    }
+
+    // Fonction pour supprimer un champ d\'image
+    function removeImageField(button) {
+      button.closest(".image-row").remove();
+    }
+  </script>';
 }

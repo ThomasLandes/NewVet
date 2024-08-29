@@ -2,7 +2,7 @@
 
 function recupDetailProduit($dbh, $produitId)
 {
-        $sql = "SELECT p.produit_nom, p.produit_desc, p.produit_prix, c.categorie_nom, p.produit_stock, p.categorie_id
+        $sql = "SELECT p.produit_nom, p.produit_desc, p.produit_prix, c.categorie_nom, p.produit_stock, p.categorie_id, produit_highlander
             FROM produit p
             JOIN categorie c ON p.categorie_id = c.categorie_id
             WHERE p.produit_id = :id";
@@ -18,12 +18,39 @@ function recupDetailProduit($dbh, $produitId)
         return $produit;
 }
 
+function ProductDetailsMultiTable($dbh, $produitId) {
+        // Récupérer les détails du produit
+        $stmt = $dbh->prepare("SELECT * FROM produit WHERE produit_id = :produit_id");
+        $stmt->bindParam(':produit_id', $produitId);
+        $stmt->execute();
+        $product = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+        // Récupérer les matériaux associés
+        $stmt = $dbh->prepare("SELECT materiau_id, composition_pourcentage FROM composition WHERE produit_id = :produit_id");
+        $stmt->bindParam(':produit_id', $produitId);
+        $stmt->execute();
+        $materials = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+        // Récupérer les images associées
+        $stmt = $dbh->prepare("SELECT image.image_id, image_nom, image_lien FROM illustration_produit JOIN image ON illustration_produit.image_id = image.image_id WHERE produit_id = :produit_id");
+        $stmt->bindParam(':produit_id', $produitId);
+        $stmt->execute();
+        $images = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+        return [
+            'product' => $product,
+            'materials' => $materials,
+            'images' => $images
+        ];
+    }
+
 function recupDetailMateriau($dbh, $produitId)
 {
         $sql = "SELECT m.materiau_nom, c.composition_pourcentage
         FROM composition c
         JOIN materiau m ON c.materiau_id = m.materiau_id
-        WHERE c.produit_id = :id";
+        WHERE c.produit_id = :id
+        ORDER BY c.composition_pourcentage DESC";
         $stmt = $dbh->prepare($sql);
         $stmt->bindParam(':id', $produitId, PDO::PARAM_INT);
         $stmt->execute();
@@ -31,6 +58,29 @@ function recupDetailMateriau($dbh, $produitId)
 
         return $materiaux;
 }
+
+function recupMateriaux($dbh)
+{
+        $sql = "SELECT * from materiau";
+        $stmt = $dbh->prepare($sql);
+        $stmt->execute();
+        $materiaux = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $materiaux;
+}
+
+function recupMateriauxOptions($dbh) {
+        $stmt = $dbh->prepare("SELECT materiau_nom FROM materiau ORDER BY materiau_nom");
+        $stmt->execute();
+        $materiaux = $stmt->fetchAll(PDO::FETCH_COLUMN);
+    
+        $options = '<option value="">Choisir un matériau</option>';
+        foreach ($materiaux as $materiau) {
+            $options .= '<option value="' . htmlspecialchars($materiau) . '">' . htmlspecialchars($materiau) . '</option>';
+        }
+    
+        return $options;
+    }
 
 
 function recupDetailImage($dbh, $produitId)

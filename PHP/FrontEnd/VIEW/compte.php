@@ -1,5 +1,9 @@
 <?php
 include '../../Fonction/element.php';
+include '../../Fonction/conf.php';
+include '../../Fonction/db.php';
+
+$dbh = connexion_bdd();
 ?>
 
 <!doctype html>
@@ -12,7 +16,7 @@ include '../../Fonction/element.php';
   </head>
   <body>
 <?php
-afficherNavbar();
+afficherNavbar($dbh);
 ?>
     <div class="container mt-5">
       <div class="row">

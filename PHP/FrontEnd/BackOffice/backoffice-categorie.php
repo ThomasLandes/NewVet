@@ -21,6 +21,30 @@ $categories = recupCategories($dbh);
           window.location.href = deleteUrl;
         }
       }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        // Fonction pour envoyer la requête AJAX pour mettre à jour le statut de mise en avant
+        function updateHighlightStatus(categorieId, isHighlighted) {
+          var xhr = new XMLHttpRequest();
+          xhr.open('POST', 'update_highlight.php', true);
+          xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+          xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+              // Optionnel : Afficher un message ou mettre à jour l'interface utilisateur en fonction de la réponse
+            }
+          };
+          xhr.send('categorie_id=' + encodeURIComponent(categorieId) + '&highlight=' + (isHighlighted ? 1 : 0));
+        }
+
+        // Écouter les changements sur les checkboxes
+        document.querySelectorAll('.form-check-input').forEach(function (checkbox) {
+          checkbox.addEventListener('change', function () {
+            var categorieId = this.getAttribute('data-categorie-id');
+            var isHighlighted = this.checked;
+            updateHighlightStatus(categorieId, isHighlighted);
+          });
+        });
+      });
     </script>
   </head>
   <body>
@@ -32,7 +56,7 @@ $categories = recupCategories($dbh);
       <div class="alert alert-success" role="alert">
         La catégorie a été supprimée avec succès.
       </div>
-      <?php elseif (isset($_GET['success']) && $_GET['success'] == 2): ?>
+    <?php elseif (isset($_GET['success']) && $_GET['success'] == 2): ?>
       <div class="alert alert-success" role="alert">
         La catégorie a été modifiée avec succès.
       </div>
@@ -42,48 +66,47 @@ $categories = recupCategories($dbh);
       </div>
     <?php endif; ?>
 
-        <!-- Contenu principal -->
-        <h1 class="h2">Gestion des Catégories</h1>
+    <!-- Contenu principal -->
+    <h1 class="h2">Gestion des Catégories</h1>
 
-        <!-- Tableau de gestion des catégories -->
-        <table class="table table-bordered table-hover BO_Tableau">
-            <thead class="table-light">
-              <tr>
-                <th scope="col">Nom de la Catégorie</th>
-                <th scope="col">Description</th>
-                <th scope="col">Image</th>
-                <th scope="col">Mise en Avant</th>
-                <th scope="col">Modifier</th>
-                <th scope="col">Supprimer</th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php foreach ($categories as $categorie): ?>
-              <tr>
-                <td><?php echo htmlspecialchars($categorie['categorie_nom']); ?></td>
-                <td><?php echo htmlspecialchars($categorie['categorie_desc']); ?></td>
-                <td><img src="<?php echo htmlspecialchars($categorie['categorie_image']); ?>" alt="<?php echo htmlspecialchars($categorie['categorie_nom']); ?>" style="height: 125px;"></td>
-                <td>
-                  <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="highlightCategory<?php echo $categorie['categorie_id']; ?>" <?php echo $categorie['categorie_highlight'] ? 'checked' : ''; ?>>
-                    <label class="form-check-label" for="highlightCategory<?php echo $categorie['categorie_id']; ?>"></label>
-                  </div>
-                </td>
-                <td><a href="backoffice-cat-modif.php?id=<?php echo $categorie['categorie_id']; ?>" class="btn btn-warning btn-sm">Modifier</a></td>
-                <td>
-                  <button class="btn btn-danger btn-sm" 
-                    onclick="confirmDeletion('<?php echo htmlspecialchars($categorie['categorie_nom']); ?>', 'backoffice-cat-suppr.php?id=<?php echo $categorie['categorie_id']; ?>')">
-                    Supprimer
-                  </button>
-                </td>
-              </tr>
-              <?php endforeach; ?>
-            </tbody>
-          </table>
-          <a href="backoffice-cat-ajout.php" class="btn btn-success mt-3">Créer une catégorie</a>
-        </main>
-      </div>
-    </div>
+    <!-- Tableau de gestion des catégories -->
+    <table class="table table-bordered table-hover BO_Tableau">
+      <thead class="table-light">
+        <tr>
+          <th scope="col">Nom de la Catégorie</th>
+          <th scope="col">Description</th>
+          <th scope="col">Image</th>
+          <th scope="col">Mise en Avant</th>
+          <th scope="col">Modifier</th>
+          <th scope="col">Supprimer</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php foreach ($categories as $categorie): ?>
+        <tr>
+          <td><?php echo htmlspecialchars($categorie['categorie_nom']); ?></td>
+          <td><?php echo htmlspecialchars($categorie['categorie_desc']); ?></td>
+          <td><img src="<?php echo htmlspecialchars($categorie['categorie_image']); ?>" alt="<?php echo htmlspecialchars($categorie['categorie_nom']); ?>" style="height: 125px;"></td>
+          <td>
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" id="highlightCategory<?php echo $categorie['categorie_id']; ?>" data-categorie-id="<?php echo $categorie['categorie_id']; ?>" <?php echo $categorie['categorie_highlight'] ? 'checked' : ''; ?>>
+              <label class="form-check-label" for="highlightCategory<?php echo $categorie['categorie_id']; ?>"></label>
+            </div>
+          </td>
+          <td><a href="backoffice-cat-modif.php?id=<?php echo $categorie['categorie_id']; ?>" class="btn btn-warning btn-sm">Modifier</a></td>
+          <td>
+            <button class="btn btn-danger btn-sm" 
+              onclick="confirmDeletion('<?php echo htmlspecialchars($categorie['categorie_nom']); ?>', 'backoffice-cat-suppr.php?id=<?php echo $categorie['categorie_id']; ?>')">
+              Supprimer
+            </button>
+          </td>
+        </tr>
+        <?php endforeach; ?>
+      </tbody>
+    </table>
+
+    <a href="backoffice-cat-ajout.php" class="btn btn-success mt-3">Créer une catégorie</a>
+
     <?php BO_ContenuDashboardFermeture();?>
   </body>
 </html>

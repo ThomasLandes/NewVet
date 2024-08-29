@@ -20,7 +20,7 @@ include '../../Fonction/element.php';
 
 <body>
 <?php
-    afficherNavbar();
+    afficherNavbar($dbh);
     ?>
     <div class="container mt-5">
       <!-- Dropdown 1: Adresse de livraison -->

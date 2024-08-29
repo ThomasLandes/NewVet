@@ -98,6 +98,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <label for="password" class="form-label">Mot de passe</label>
                     <input type="password" class="form-control" id="password" name="password" placeholder="Choisissez un mot de passe" required>
                 </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Confirmation mot de passe</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Choisissez un mot de passe" required>
+                </div>
                 <div class="d-grid gap-2">
                     <button type="submit" class="btn btn-primary">S'inscrire</button>
                 </div>
