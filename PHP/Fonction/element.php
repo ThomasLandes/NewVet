@@ -12,17 +12,19 @@ function headerElementPrint()
 
 
 function afficherNavbar($dbh)
-{ 
-    // Récupérer les catégories
-    $categories = recupCategories($dbh);
-
+{
     // Démarrer la session si elle n'est pas déjà démarrée
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
 
+    // Récupérer les catégories
+    $categories = recupCategories($dbh);
+
     // Vérifier si l'utilisateur est connecté
     $userInfo = getUserInfo();
+
+    // Générer la navbar
     echo '
     <!-- NAVBAR -->
     <nav class="navbar navbar-expand-lg bg-dark">
@@ -92,9 +94,17 @@ function afficherNavbar($dbh)
     // Afficher le lien vers le compte ou le bouton de connexion selon l'état de la session
     if ($userInfo !== null) {
         echo '
-                <a href="compte.php?id='.$userInfo['user_id'].'" class="btn btn-outline-secondary">
+                <a href="compte.php?id=' . $userInfo['user_id'] . '" class="btn btn-outline-secondary">
                     <i class="bi bi-person"></i> Mon Compte
                 </a>';
+        
+        // Ajouter le bouton pour les administrateurs
+        if (isAdmin()){
+            echo '
+                <a href="../BackOffice/backoffice-index.php" class="btn btn-outline-warning ms-2">
+                    <i class="bi bi-tools"></i> BackOffice
+                </a>';
+        }
     } else {
         echo '
                 <a href="connexion.php" class="btn btn-outline-secondary">
@@ -109,6 +119,8 @@ function afficherNavbar($dbh)
     <!-- NAVBAR -->
     ';
 }
+
+
 
 
 function BO_afficherNavbar() {

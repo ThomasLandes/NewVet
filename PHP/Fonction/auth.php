@@ -1,6 +1,7 @@
-<?php 
+<?php
 
-function verifierSessionActive() {
+function verifierSessionActive()
+{
     // Démarrer la session si elle n'est pas déjà démarrée
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
@@ -10,7 +11,8 @@ function verifierSessionActive() {
     return isset($_SESSION['utilisateur_id']);
 }
 
-function obtenirInfosUtilisateur($dbh) {
+function obtenirInfosUtilisateur($dbh)
+{
     // Assurez-vous que la session est démarrée
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
@@ -27,7 +29,8 @@ function obtenirInfosUtilisateur($dbh) {
     return null; // L'utilisateur n'est pas connecté
 }
 
-function autoriserAccesUser($dbh) {
+function autoriserAccesUser($dbh)
+{
     // Vérifier que la session est active
     verifierSessionActive();
 
@@ -42,27 +45,26 @@ function autoriserAccesUser($dbh) {
     }
 }
 
-function autoriserOnlyAdmin() {
+function autoriserOnlyAdmin()
+{
     // Vérifier que la session est active
-   $testConnecte = verifierSessionActive();
-   if ($testConnecte){
-    // Récupérer les infos utilisateur
-    $userInfo = getUserInfo();
+    $testConnecte = verifierSessionActive();
+    if ($testConnecte) {
+        // Récupérer les infos utilisateur
+        $userInfo = getUserInfo();
 
-    // Vérifier si le rôle est bien "admin" (assume que "admin" a un `role_id` de 1)
-    if ($userInfo['role_id'] != 1) {
-        // Rediriger vers une page d'erreur ou la page d'accueil si l'utilisateur n'est pas autorisé
-        header("Location: unauthorized.php");
-        exit();
-    }
-    else {
-        header("Location: ../VIEW/connexion.php");
+        // Vérifier si le rôle est bien "admin" (assume que "admin" a un `role_id` de 1)
+        if ($userInfo['role_id'] != 1) {
+            // Rediriger vers une page d'erreur ou la page d'accueil si l'utilisateur n'est pas autorisé
+            header("Location: unauthorized.php");
+            exit();
+        } 
     }
 }
-}
 
 
-function getUserInfo() {
+function getUserInfo()
+{
     // Démarrer la session si elle n'est pas déjà démarrée
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
@@ -78,5 +80,20 @@ function getUserInfo() {
         // Si l'utilisateur n'est pas connecté, retourner null ou false
         return null;
     }
+}
+
+function isAdmin()
+{
+    // Vérifier si la session est active
+    if (verifierSessionActive()) {
+        // Récupérer les informations utilisateur
+        $userInfo = getUserInfo();
+        
+        // Vérifier si le rôle est administrateur
+        return isset($userInfo['role_id']) && $userInfo['role_id'] == 1;
+    }
+    
+    // Retourner false si la session n'est pas active
+    return false;
 }
 

@@ -5,7 +5,8 @@ include '../../Fonction/db.php';
 include '../../Fonction/auth.php';
 
 $dbh = connexion_bdd();
-
+$TEST = isAdmin();
+print_r($TEST);
 
 // Vérifier si l'utilisateur est connecté
 $userInfo = getUserInfo();
@@ -62,15 +63,15 @@ if ($id !== $userInfo['user_id']) {
             <form action="update_info.php" method="POST">
               <div class="mb-3">
                 <label for="adresse_prenom" class="form-label">Prénom</label>
-                <input type="text" class="form-control" id="adresse_prenom" name="adresse_prenom" placeholder="Votre prénom" value="<?php echo htmlspecialchars($adresse['adresse_prenom']); ?>">
+                <input type="text" class="form-control" id="adresse_prenom" name="adresse_prenom" placeholder="Votre prénom" value="Pascal">
               </div>
               <div class="mb-3">
                 <label for="adresse_nom" class="form-label">Nom</label>
-                <input type="text" class="form-control" id="adresse_nom" name="adresse_nom" placeholder="Votre nom" value="<?php echo htmlspecialchars($adresse['adresse_nom']); ?>">
+                <input type="text" class="form-control" id="adresse_nom" name="adresse_nom" placeholder="Votre nom" value="Duromi">
               </div>
               <div class="mb-3">
                 <label for="adresse_tel" class="form-label">Téléphone</label>
-                <input type="text" class="form-control" id="adresse_tel" name="adresse_tel" placeholder="Votre téléphone" value="<?php echo htmlspecialchars($adresse['adresse_tel']); ?>">
+                <input type="text" class="form-control" id="adresse_tel" name="adresse_tel" placeholder="Votre téléphone" value="0809121145">
               </div>
               <button type="submit" class="btn btn-primary">Mettre à jour</button>
             </form>
@@ -113,23 +114,23 @@ if ($id !== $userInfo['user_id']) {
           <form action="update_adresse.php" method="POST">
             <div class="mb-3">
               <label for="adresse_rue" class="form-label">Rue</label>
-              <input type="text" class="form-control" id="adresse_rue" name="adresse_rue" placeholder="Rue" value="<?php echo htmlspecialchars($adresse['adresse_rue']); ?>">
+              <input type="text" class="form-control" id="adresse_rue" name="adresse_rue" placeholder="Rue" value="Rue du sang de serp">
             </div>
             <div class="mb-3">
               <label for="adresse_complement" class="form-label">Complément d'adresse</label>
-              <input type="text" class="form-control" id="adresse_complement" name="adresse_complement" placeholder="Complément d'adresse" value="<?php echo htmlspecialchars($adresse['adresse_complement']); ?>">
+              <input type="text" class="form-control" id="adresse_complement" name="adresse_complement" placeholder="Complément d'adresse" value="">
             </div>
             <div class="mb-3">
               <label for="adresse_ville" class="form-label">Ville</label>
-              <input type="text" class="form-control" id="adresse_ville" name="adresse_ville" placeholder="Ville" value="<?php echo htmlspecialchars($adresse['adresse_ville']); ?>">
+              <input type="text" class="form-control" id="adresse_ville" name="adresse_ville" placeholder="Ville" value="Toulouse">
             </div>
             <div class="mb-3">
               <label for="adresse_region" class="form-label">Région</label>
-              <input type="text" class="form-control" id="adresse_region" name="adresse_region" placeholder="Région" value="<?php echo htmlspecialchars($adresse['adresse_region']); ?>">
+              <input type="text" class="form-control" id="adresse_region" name="adresse_region" placeholder="Région" value="31000">
             </div>
             <div class="mb-3">
               <label for="adresse_pays" class="form-label">Pays</label>
-              <input type="text" class="form-control" id="adresse_pays" name="adresse_pays" placeholder="Pays" value="<?php echo htmlspecialchars($adresse['adresse_pays']); ?>">
+              <input type="text" class="form-control" id="adresse_pays" name="adresse_pays" placeholder="Pays" value="France">
             </div>
             <button type="submit" class="btn btn-primary">Mettre à jour les adresses</button>
           </form>
@@ -155,10 +156,15 @@ if ($id !== $userInfo['user_id']) {
             <button type="submit" class="btn btn-primary">Mettre à jour les paiements</button>
           </form>
         </div>
+        <!-- Bouton de déconnexion -->
+        <a href="deconnexion.php" class="btn btn-outline-danger ms-2">
+          <i class="bi bi-box-arrow-right"></i> Déconnexion
+        </a>
       </div>
     </div>
   </div>
   </div>
+
 
 </body>
 

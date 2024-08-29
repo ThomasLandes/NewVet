@@ -207,6 +207,7 @@ function recupProduitsParPage($dbh, $start, $limit)
                 LEFT JOIN illustration_produit ip ON p.produit_id = ip.produit_id
                 LEFT JOIN image i ON ip.image_id = i.image_id
                 GROUP BY p.produit_id
+                ORDER BY produit_highlander DESC, produit_stock DESC
                 LIMIT :start, :limit";
         $stmt = $dbh->prepare($sql);
         $stmt->bindParam(':start', $start, PDO::PARAM_INT);

@@ -1,6 +1,9 @@
 <?php
 include '../../Fonction/element.php';
+include '../../Fonction/conf.php';
+include '../../Fonction/db.php';
 include '../../Fonction/auth.php';
+$dbh = connexion_bdd();
 ?>
 
 <!doctype html>
@@ -96,7 +99,7 @@ include '../../Fonction/auth.php';
                 <p><strong>Adresse de livraison :</strong> Adresse 1, Adresse 2</p>
                 <p><strong>Moyen de paiement :</strong> **** **** **** 3456</p>
                 <p><strong>Total :</strong> 79,98 €</p>
-                <a href="confirmation.php" class="btn btn-success">Confirmer la commande</a>
+                <a href="confirm_commande.php" class="btn btn-success">Confirmer la commande</a>
               </div>
             </div>
           </div>
