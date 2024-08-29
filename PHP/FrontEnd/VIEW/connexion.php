@@ -5,6 +5,8 @@ session_start(); // Démarrer la session
 include '../../Fonction/element.php';
 include '../../Fonction/conf.php';
 include '../../Fonction/db.php';
+include '../../Fonction/auth.php';
+
 $dbh = connexion_bdd();
 
 
@@ -19,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!empty($email) && !empty($password)) {
        
         // Préparer la requête SQL pour récupérer l'utilisateur
-        $stmt = $dbh->prepare("SELECT utilisateur_id, utilisateur_mdp FROM utilisateur WHERE utilisateur_email = :email");
+        $stmt = $dbh->prepare("SELECT utilisateur_id, utilisateur_mdp, role.role_id FROM utilisateur , role WHERE utilisateur.role_id = role.role_id AND utilisateur_email = :email");
         $stmt->bindParam(':email', $email, PDO::PARAM_STR);
         $stmt->execute();
 
@@ -30,6 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (password_verify($password, $user['utilisateur_mdp'])) {
                 // Initialiser la session
                 $_SESSION['utilisateur_id'] = $user['utilisateur_id'];
+                $_SESSION['role_id'] = $user['role_id'];
 
                 // Rediriger vers une page sécurisée
                 header("Location: index.php");
@@ -99,9 +102,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     </div>
                     <div class="mb-3 password-container">
                         <label for="password" class="form-label">Mot de passe</label>
-                        <input type="password" class="form-control" id="password" name="password" placeholder="Choisissez un mot de passe" required>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Mot de passe" required>
                         <span class="toggle-password" onclick="togglePassword()">
-                            <i class="bi bi-eye"></i> <!-- Utilisez une bibliothèque d'icônes comme Bootstrap Icons ou FontAwesome -->
+                            <i class="bi bi-eye"></i> 
                         </span>
                     </div>
                     <div class="d-grid gap-2">

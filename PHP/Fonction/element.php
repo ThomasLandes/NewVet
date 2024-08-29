@@ -16,6 +16,13 @@ function afficherNavbar($dbh)
     // Récupérer les catégories
     $categories = recupCategories($dbh);
 
+    // Démarrer la session si elle n'est pas déjà démarrée
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    // Vérifier si l'utilisateur est connecté
+    $userInfo = getUserInfo();
     echo '
     <!-- NAVBAR -->
     <nav class="navbar navbar-expand-lg bg-dark">
@@ -80,16 +87,29 @@ function afficherNavbar($dbh)
                             <a href="checkout.php" class="btn btn-primary btn-sm">Passer à la caisse</a>
                         </li>
                     </ul>
-                </div>
-                <a href="compte.php" class="btn btn-outline-secondary">
-                    <i class="bi bi-person"></i> <!-- Icône de compte -->
-                </a>
+                </div>';
+
+    // Afficher le lien vers le compte ou le bouton de connexion selon l'état de la session
+    if ($userInfo !== null) {
+        echo '
+                <a href="compte.php?id='.$userInfo['user_id'].'" class="btn btn-outline-secondary">
+                    <i class="bi bi-person"></i> Mon Compte
+                </a>';
+    } else {
+        echo '
+                <a href="connexion.php" class="btn btn-outline-secondary">
+                    <i class="bi bi-person"></i> Se connecter
+                </a>';
+    }
+
+    echo '
             </div>
         </div>
     </nav>
     <!-- NAVBAR -->
     ';
 }
+
 
 function BO_afficherNavbar() {
   echo'

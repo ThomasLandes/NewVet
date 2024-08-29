@@ -1,7 +1,9 @@
 <?php
 include '../../Fonction/db.php';
 include '../../Fonction/conf.php';
+include '../../Fonction/auth.php';
 
+autoriserOnlyAdmin();
 // Connexion à la base de données
 $dbh = connexion_bdd();
 

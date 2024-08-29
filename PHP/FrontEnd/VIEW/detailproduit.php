@@ -2,6 +2,8 @@
 include '../../Fonction/element.php';
 include '../../Fonction/conf.php';
 include '../../Fonction/db.php';
+include '../../Fonction/auth.php';
+
 
 if (!isset($_GET['id'])) {
     die("ID du produit non spécifié.");

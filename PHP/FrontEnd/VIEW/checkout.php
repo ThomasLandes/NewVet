@@ -1,5 +1,6 @@
 <?php
 include '../../Fonction/element.php';
+include '../../Fonction/auth.php';
 ?>
 
 <!doctype html>

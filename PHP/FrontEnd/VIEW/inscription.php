@@ -5,7 +5,8 @@ session_start(); // Démarrer la session
 include '../../Fonction/element.php';
 include '../../Fonction/conf.php';
 include '../../Fonction/mail.php'; 
-include '../../Fonction/db.php'; 
+include '../../Fonction/db.php';
+include '../../Fonction/auth.php';
 // Connexion à la base de données
 $dbh = connexion_bdd();
 $errorMessage = ''; // Variable pour stocker les messages d'erreur
@@ -94,14 +95,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <label for="email" class="form-label">Adresse e-mail</label>
                     <input type="email" class="form-control" id="email" name="email" placeholder="Votre e-mail" required>
                 </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label">Mot de passe</label>
-                    <input type="password" class="form-control" id="password" name="password" placeholder="Choisissez un mot de passe" required>
-                </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label">Confirmation mot de passe</label>
-                    <input type="password" class="form-control" id="password" name="password" placeholder="Choisissez un mot de passe" required>
-                </div>
+                <div class="mb-3 password-container">
+                        <label for="password" class="form-label">Mot de passe</label>
+                        <span class="toggle-password" onclick="togglePassword()">
+                            <i class="bi bi-eye"></i> 
+                        </span>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Choisissez un mot de passe" required>
+                        
+                    </div>
                 <div class="d-grid gap-2">
                     <button type="submit" class="btn btn-primary">S'inscrire</button>
                 </div>
@@ -110,6 +111,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoDa5a9F0QwS5c5N9zdoSm+NYzFJ8huFt1dJRJZ1HA+famK" crossorigin="anonymous"></script>
+<script>
+        function togglePassword() {
+            var passwordInput = document.getElementById('password');
+            var toggleIcon = document.querySelector('.toggle-password i');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('bi-eye');
+                toggleIcon.classList.add('bi-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('bi-eye-slash');
+                toggleIcon.classList.add('bi-eye');
+            }
+        }
+    </script>
 </body>
 </html>

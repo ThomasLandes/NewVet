@@ -2,6 +2,7 @@
 include '../../Fonction/element.php';
 include '../../Fonction/conf.php';
 include '../../Fonction/db.php';
+include '../../Fonction/auth.php';
 
 $dbh = connexion_bdd();
 

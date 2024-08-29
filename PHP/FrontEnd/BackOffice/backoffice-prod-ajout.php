@@ -2,6 +2,9 @@
 include '../../Fonction/db.php';
 include '../../Fonction/conf.php';
 include '../../Fonction/element.php';
+include '../../Fonction/auth.php';
+
+autoriserOnlyAdmin();
 
 $dbh = connexion_bdd();
 $materiaux = recupMateriaux($dbh);
