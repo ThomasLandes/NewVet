@@ -5,8 +5,12 @@ session_start();
 // Détruire toutes les variables de session
 $_SESSION = array();
 
+// Supprimer les cookies créés, y compris ceux du panier
+if (isset($_COOKIE['panier'])) {
+    setcookie('panier', '', time() - 3600, '/');  // Suppression du cookie panier
+}
+
 // Si vous souhaitez détruire complètement la session, vous devez également détruire le cookie de session.
-// Note: cela détruira également la session sur le serveur
 if (ini_get("session.use_cookies")) {
     $params = session_get_cookie_params();
     setcookie(session_name(), '', time() - 42000,

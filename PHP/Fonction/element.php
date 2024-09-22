@@ -25,6 +25,15 @@ function afficherNavbar($dbh)
     // Vérifier si l'utilisateur est connecté
     $userInfo = getUserInfo();
 
+    // Récupérer le panier depuis les cookies
+    $panier = isset($_COOKIE['panier']) ? json_decode($_COOKIE['panier'], true) : [];
+
+    // Calculer le total du panier
+    $totalPanier = 0;
+    foreach ($panier as $produit) {
+        $totalPanier += $produit['prix'] * $produit['quantite'];
+    }
+
     // Générer la navbar
     echo '
     <!-- NAVBAR -->
@@ -61,35 +70,41 @@ function afficherNavbar($dbh)
 
             <!-- Icônes à droite -->
             <div class="d-flex">
+                <!-- Dropdown Panier -->
                 <div class="dropdown">
                     <a href="#" class="btn btn-outline-secondary dropdown-toggle" id="cartDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-cart"></i> Panier
+                        <i class="bi bi-cart"></i> Panier (' . count($panier) . ')
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end p-3" aria-labelledby="cartDropdown" style="min-width: 300px;">
-                        <li class="mb-2"><strong>Votre Panier</strong></li>
-                        <li>
-                            <div class="d-flex justify-content-between">
-                                <span>Article 1</span>
-                                <span>19,99 €</span>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="d-flex justify-content-between">
-                                <span>Article 2</span>
-                                <span>29,99 €</span>
-                            </div>
-                        </li>
-                        <li class="dropdown-divider"></li>
-                        <li>
-                            <div class="d-flex justify-content-between">
-                                <strong>Total</strong>
-                                <strong>49,98 €</strong>
-                            </div>
-                        </li>
-                        <li class="mt-3 text-center">
-                            <a href="checkout.php" class="btn btn-primary btn-sm">Passer à la caisse</a>
-                        </li>
-                    </ul>
+                        <li class="mb-2"><strong>Votre Panier</strong></li>';
+
+    if (empty($panier)) {
+        echo '<li><p class="text-center">Votre panier est vide.</p></li>';
+    } else {
+        foreach ($panier as $produit) {
+            echo '
+                <li>
+                    <div class="d-flex justify-content-between">
+                        <span>' . htmlspecialchars($produit['nom']) . '</span>
+                        <span>' . htmlspecialchars(number_format($produit['prix'], 2)) . ' € x ' . $produit['quantite'] . '</span>
+                    </div>
+                </li>';
+        }
+
+        echo '
+            <li class="dropdown-divider"></li>
+            <li>
+                <div class="d-flex justify-content-between">
+                    <strong>Total</strong>
+                    <strong>' . htmlspecialchars(number_format($totalPanier, 2)) . ' €</strong>
+                </div>
+            </li>
+            <li class="mt-3 text-center">
+                <a href="checkout.php" class="btn btn-primary btn-sm">Passer à la caisse</a>
+            </li>';
+    }
+
+    echo '      </ul>
                 </div>';
 
     // Afficher le lien vers le compte ou le bouton de connexion selon l'état de la session
@@ -98,9 +113,9 @@ function afficherNavbar($dbh)
                 <a href="compte.php?id=' . $userInfo['user_id'] . '" class="btn btn-outline-secondary">
                     <i class="bi bi-person"></i> Mon Compte
                 </a>';
-        
+
         // Ajouter le bouton pour les administrateurs
-        if (isAdmin()){
+        if (isAdmin()) {
             echo '
                 <a href="../BackOffice/backoffice-index.php" class="btn btn-outline-warning ms-2">
                     <i class="bi bi-tools"></i> BackOffice
@@ -120,10 +135,6 @@ function afficherNavbar($dbh)
     <!-- NAVBAR -->
     ';
 }
-
-
-
-
 
 
 function BO_afficherNavbar() {

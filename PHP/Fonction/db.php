@@ -274,3 +274,17 @@ function deleteCb($dbh,$idCb){
     $delete_stmt = $dbh->prepare($sql);
     $delete_stmt->bindParam(':id_paiement', $idCb, PDO::PARAM_INT);
     $delete_stmt->execute();}
+
+function getContenuCommandeId($dbh,$id)
+{
+    $sql = "SELECT produit_nom, contenu_quantite, contenu_prix_unite 
+            FROM contenu_commande c, produit p 
+            WHERE c.produit_id = p.produit_id
+            AND commande_id= :id
+            GROUP BY p.produit_id";
+    $stmt = $dbh->prepare($sql);
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
