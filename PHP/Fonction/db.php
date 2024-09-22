@@ -216,3 +216,61 @@ function recupProduitsParPage($dbh, $start, $limit)
         $produits = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $produits;
 }
+
+function recupUserInfoParID($dbh,$id)
+{
+    $sql = "SELECT * FROM utilisateur 
+            WHERE utilisateur_id = :id";
+    $stmt = $dbh->prepare($sql);
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+function recupUserAdresseParUser($dbh,$id)
+{
+    $sql = "SELECT * FROM adresse
+            WHERE utilisateur_id = :id
+            ORDER BY is_principal DESC";
+    $stmt = $dbh->prepare($sql);
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    $stmt->execute();
+    $adresses = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    return $adresses;
+}
+
+function recupAdresseSpecifique($dbh,$idAdr,$idUser)
+{
+    $sql = "SELECT * FROM adresse a, utilisateur u
+            WHERE a.utilisateur_id = u.utilisateur_id
+            AND a.utilisateur_id = :idUser
+            AND adresse_id = :idAdr";
+    $stmt = $dbh->prepare($sql);
+    $stmt->bindParam(':idAdr', $idAdr, PDO::PARAM_INT);
+    $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+function deleteAdresse($dbh,$idAdr){
+        $sql = "DELETE FROM adresse WHERE adresse_id = :id_adresse";
+        $delete_stmt = $dbh->prepare($sql);
+        $delete_stmt->bindParam(':id_adresse', $idAdr, PDO::PARAM_INT);
+        $delete_stmt->execute();}
+
+function recupCbParUser($dbh,$id)
+{
+    $sql = "SELECT * FROM paiement
+            WHERE utilisateur_id = :id
+            ORDER BY is_principal DESC";
+    $stmt = $dbh->prepare($sql);
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function deleteCb($dbh,$idCb){
+    $sql = "DELETE FROM paiement WHERE paiement_id = :id_paiement";
+    $delete_stmt = $dbh->prepare($sql);
+    $delete_stmt->bindParam(':id_paiement', $idCb, PDO::PARAM_INT);
+    $delete_stmt->execute();}

@@ -13,7 +13,7 @@ function verifierSessionActive()
 
 function obtenirInfosUtilisateur($dbh)
 {
-    // Assurez-vous que la session est démarrée
+    // la session est démarrée
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
@@ -37,7 +37,7 @@ function autoriserAccesUser($dbh)
     // Récupérer les infos utilisateur
     $user = obtenirInfosUtilisateur($dbh);
 
-    // Vérifier si le rôle est bien "user" (assume que "user" a un `role_id` de 2)
+    // Vérifier si le rôle est bien "user" ("user" a un `role_id` de 2)
     if ($user && $user['role_id'] != 2) {
         // Rediriger vers une page d'erreur ou la page d'accueil si l'utilisateur n'est pas autorisé
         header("Location: unauthorized.php");
@@ -58,7 +58,11 @@ function autoriserOnlyAdmin()
             // Rediriger vers une page d'erreur ou la page d'accueil si l'utilisateur n'est pas autorisé
             header("Location: unauthorized.php");
             exit();
-        } 
+        }
+    }
+    else{
+        header("Location: unauthorized.php");
+        exit();
     }
 }
 

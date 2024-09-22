@@ -112,7 +112,7 @@ foreach ($commande as $item) {
         </div>
 
     </div>
-
+    <?php afficherFooter();?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoDa5a9F0QwS5c5N9zdoSm+NYzFJ8huFt1dJRJZ1HA+famK" crossorigin="anonymous"></script>
 </body>
 

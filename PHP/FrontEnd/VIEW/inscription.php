@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Validation de l'email
     if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
         // Validation du mot de passe (au moins 12 caractères, une majuscule, un chiffre, un caractère spécial)
-        if (preg_match('/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{12,}$/', $password)) {
+        if (preg_match('/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{10,}$/', $password)) {
 
 
             // Vérifier si l'email est déjà utilisé
@@ -110,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
     </div>
 </div>
-
+<?php afficherFooter();?>
 <script>
         function togglePassword() {
             var passwordInput = document.getElementById('password');

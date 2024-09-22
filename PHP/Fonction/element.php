@@ -3,6 +3,7 @@
 function headerElementPrint()
 {
     echo '
+<link rel="icon" href="../IMAGE/newVet-logo.png" type="image/x-icon">
 <link rel="stylesheet" href="../CSS/navbar.css">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
@@ -123,6 +124,8 @@ function afficherNavbar($dbh)
 
 
 
+
+
 function BO_afficherNavbar() {
   echo'
   <div class="container-fluid">
@@ -185,6 +188,7 @@ function BO_ContenuDashboardFermeture(){
 function BO_headerElementPrint()
 {
     echo '
+<link rel="icon" href="../IMAGE/newVet-logo.png" type="image/x-icon">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
  <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
@@ -253,3 +257,53 @@ function BO_ScriptAjoutSectionMateriau() {
     }
   </script>';
 }
+
+function afficherFooter()
+{
+    echo '
+    <!-- FOOTER -->
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <!-- Liens utiles -->
+                <div class="col-md-4">
+                    <h5>Liens Utiles</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="cgu.php" class="text-light text-decoration-none">CGU</a></li>
+                        <li><a href="mentions-legales.php" class="text-light text-decoration-none">Mentions légales</a></li>
+                        <li><a href="contact.php" class="text-light text-decoration-none">Contact</a></li>
+                    </ul>
+                </div>
+
+                <!-- Réseaux sociaux -->
+                <div class="col-md-4">
+                    <h5>Suivez-nous</h5>
+                    <ul class="list-unstyled d-flex">
+                        <li><a href="https://www.facebook.com/votreprofil" class="text-light text-decoration-none me-3">
+                            <i class="bi bi-facebook"></i> Facebook
+                        </a></li>
+                        <li><a href="https://www.twitter.com/votreprofil" class="text-light text-decoration-none me-3">
+                            <i class="bi bi-twitter"></i> Twitter
+                        </a></li>
+                        <li><a href="https://www.instagram.com/votreprofil" class="text-light text-decoration-none me-3">
+                            <i class="bi bi-instagram"></i> Instagram
+                        </a></li>
+                        <li><a href="https://www.linkedin.com/votreprofil" class="text-light text-decoration-none">
+                            <i class="bi bi-linkedin"></i> LinkedIn
+                        </a></li>
+                    </ul>
+                </div>
+
+                <!-- Copyright -->
+                <div class="col-md-4 text-end">
+                    <h5>&copy; ' . date('Y') . ' NewVet</h5>
+                    <p>All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- FOOTER -->
+    ';
+}
+?>
+

@@ -17,13 +17,13 @@ function sendVerifMail($email, $token) {
         $mail->isSMTP();
         $mail->Host = 'smtp.office365.com';
         $mail->SMTPAuth = true;
-        $mail->Username = ''; // renseigner l'adresse ici
-        $mail->Password = ''; // le mot de passe ici
+        $mail->Username = 'newvet.confirm@outlook.com'; // renseigner l'adresse ici
+        $mail->Password = 'NewVet31!'; // le mot de passe ici
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
 
         // Destinataire
-        $mail->setFrom('', 'NEW VET'); // de nouveau l'adresse
+        $mail->setFrom('newvet.confirm@outlook.com', 'NEW VET'); // de nouveau l'adresse
         $mail->addAddress($email);
 
         // Contenu de l'e-mail

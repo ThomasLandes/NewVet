@@ -97,6 +97,7 @@ $produits = recupProduitsParCategorie($dbh, $categorieId);
             </div>
         </div>
     </div>
+    <?php afficherFooter();?>
 </body>
 
 </html>

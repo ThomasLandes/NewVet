@@ -12,5 +12,6 @@
         <p>Vous n'avez pas l'autorisation d'accéder à cette page.</p>
         <a href="index.php" class="btn btn-primary">Retour à l'accueil</a>
     </div>
+    <?php afficherFooter();?>
 </body>
 </html>

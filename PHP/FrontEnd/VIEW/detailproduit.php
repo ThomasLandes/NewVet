@@ -121,6 +121,7 @@ $produitsSimilaires = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </div>
     </div>
+    <?php afficherFooter();?>
 </body>
 
 </html>

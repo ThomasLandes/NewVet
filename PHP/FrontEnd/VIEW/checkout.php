@@ -106,3 +106,4 @@ $dbh = connexion_bdd();
         </div>
       </div>
     </div>
+    <?php afficherFooter();?>
