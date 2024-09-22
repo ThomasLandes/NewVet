@@ -288,3 +288,15 @@ function getContenuCommandeId($dbh,$id)
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+function getAdresseById($dbh, $adresseId) {
+    $sql = "SELECT *
+            FROM adresse 
+            WHERE adresse_id = :adresse_id";
+
+    $stmt = $dbh->prepare($sql);
+    $stmt->bindValue(':adresse_id', $adresseId);
+    $stmt->execute();
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+

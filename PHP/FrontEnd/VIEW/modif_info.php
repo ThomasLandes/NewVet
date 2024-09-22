@@ -83,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <div class="mb-3">
             <label for="tel" class="form-label">Téléphone</label>
-            <input type="text" class="form-control" id="tel" name="tel" value="<?php echo htmlspecialchars($user['utilisateur_tel']); ?>" required>
+            <input type="text" class="form-control" id="tel" name="tel" value="<?php echo htmlspecialchars($user['utilisateur_tel']); ?>">
         </div>
         <button type="submit" class="btn btn-primary">Valider les modifications</button>
         <a href="compte.php?id=<?php echo $id; ?>" class="btn btn-secondary">Annuler</a>

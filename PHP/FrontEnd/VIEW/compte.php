@@ -100,26 +100,54 @@ afficherNavbar($dbh);
                         <th scope="col">Date</th>
                         <th scope="col">Statut</th>
                         <th scope="col">Total</th>
+                        <th scope="col">Action</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>01/01/2024</td>
-                        <td>Livré</td>
-                        <td>49,99 €</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>15/02/2024</td>
-                        <td>En cours</td>
-                        <td>29,99 €</td>
-                    </tr>
+                    <?php
+                    // Requête pour récupérer les commandes avec le total pour chaque commande
+                    $sql = "
+    SELECT 
+        c.commande_id, 
+        c.commande_date_crea, 
+        c.commande_etat,
+        SUM(cc.contenu_prix_unite * cc.contenu_quantite) AS total
+    FROM 
+        commande c
+    JOIN 
+        contenu_commande cc ON c.commande_id = cc.commande_id
+    WHERE 
+        c.utilisateur_id = :utilisateur_id
+    GROUP BY 
+        c.commande_id
+    ORDER BY 
+        c.commande_date_crea DESC
+";
+
+                    $stmt = $dbh->prepare($sql);
+                    $stmt->bindValue(':utilisateur_id', $id);
+                    $stmt->execute();
+                    $commandes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                    // Vérifier s'il y a des commandes
+                    if (count($commandes) > 0) {
+                        foreach ($commandes as $commande) {
+                            echo '<tr>';
+                            echo '<th scope="row">' . htmlspecialchars($commande['commande_id']) . '</th>';
+                            echo '<td>' . htmlspecialchars(date('d/m/Y', strtotime($commande['commande_date_crea']))) . '</td>';
+                            echo '<td>' . htmlspecialchars($commande['commande_etat']) . '</td>';
+                            echo '<td>' . number_format($commande['total'], 2, ',', ' ') . ' €</td>';
+                            echo '<td><a href="details_commande.php?commande_id=' . htmlspecialchars($commande['commande_id']) . '" class="btn btn-info">Voir détails</a></td>';
+                            echo '</tr>';
+                        }
+                    } else {
+                        echo '<tr><td colspan="5" class="text-center">Aucune commande trouvée.</td></tr>';
+                    }
+                    ?>
                     </tbody>
                 </table>
             </div>
-
-            <!-- Mes adresses -->
+                    <!-- Mes adresses -->
             <div id="collapseAdresses" class="collapse" data-bs-parent="#accordionAccount">
                 <div class="mb-3">
                     <h3>Mes adresses</h3>

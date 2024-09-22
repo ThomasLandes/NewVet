@@ -171,6 +171,11 @@ function BO_afficherNavbar() {
                 </a>
               </li>
               <li class="nav-item">
+                <a class="nav-link" href="backoffice-materiau.php">
+                  <i class="bi bi-egg-fried"></i> Materiau
+                </a>
+              </li>
+              <li class="nav-item">
                 <a class="nav-link" href="../VIEW">
                   <i class="bi bi-arrow-bar-left"></i> Retour au site
                 </a>
