@@ -40,20 +40,23 @@ $cartes = recupCbParUser($dbh, $userId);
 
         function showReview() {
             const selectedAddress = document.querySelector('input[name="adresse_id"]:checked');
+            const selectedFacturationAddress = document.querySelector('input[name="adresse_facturation_id"]:checked');
             const selectedCard = document.querySelector('input[name="carte_id"]:checked'); // Utiliser l'ID de paiement
 
-            if (selectedAddress && selectedCard) {
+            if (selectedAddress && selectedFacturationAddress && selectedCard) {
                 document.getElementById('reviewAddress').textContent = selectedAddress.nextElementSibling.textContent;
+                document.getElementById('reviewFacturationAddress').textContent = selectedFacturationAddress.nextElementSibling.textContent;
                 document.getElementById('reviewCard').textContent = '**** **** **** ' + selectedCard.nextElementSibling.textContent.slice(-4);
 
                 // Remplir les champs cachés avec les valeurs sélectionnées
                 document.getElementById('hiddenAddress').value = selectedAddress.value;
+                document.getElementById('hiddenFacturationAddress').value = selectedFacturationAddress.value;
                 document.getElementById('hiddenCard').value = selectedCard.value;  // L'ID de paiement
 
                 // Afficher l'étape de révision
                 document.getElementById('collapseReview').classList.remove('collapse');
             } else {
-                alert('Veuillez sélectionner une adresse et un moyen de paiement.');
+                alert('Veuillez sélectionner une adresse de livraison, une adresse de facturation et un moyen de paiement.');
             }
         }
 
@@ -144,6 +147,37 @@ $cartes = recupCbParUser($dbh, $userId);
                     <?php else : ?>
                         <p>Aucune adresse enregistrée. <a href="add_adresse.php">Ajouter une nouvelle adresse</a></p>
                     <?php endif; ?>
+                    <button class="btn btn-primary mt-3" data-bs-toggle="collapse" data-bs-target="#collapseFacturation"
+                            onclick="hideButton(this)">
+                        Suivant
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Étape 3 : Sélection d'adresse de facturation -->
+    <div class="row mt-3 collapse" id="collapseFacturation">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    Adresse de facturation
+                </div>
+                <div class="card-body">
+                    <?php if (!empty($adresses)) : ?>
+                        <?php foreach ($adresses as $adresse) : ?>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="adresse_facturation_id"
+                                       value="<?php echo htmlspecialchars($adresse['adresse_id']); ?>">
+                                <label class="form-check-label">
+                                    <?php echo htmlspecialchars($adresse['adresse_prenom']) . ' ' . htmlspecialchars($adresse['adresse_nom']) . ', ' . htmlspecialchars($adresse['adresse_rue']) . ', ' . htmlspecialchars($adresse['adresse_complement']) . ', ' . htmlspecialchars($adresse['adresse_region']) . ', ' . htmlspecialchars($adresse['adresse_ville']) . ', ' . htmlspecialchars($adresse['adresse_pays']); ?>
+                                </label>
+                            </div>
+                        <?php endforeach; ?>
+                        <p><a href="add_adresse.php">Ajouter une nouvelle adresse</a></p>
+                    <?php else : ?>
+                        <p>Aucune adresse enregistrée. <a href="add_adresse.php">Ajouter une nouvelle adresse</a></p>
+                    <?php endif; ?>
                     <button class="btn btn-primary mt-3" data-bs-toggle="collapse" data-bs-target="#collapsePayment"
                             onclick="hideButton(this)">
                         Suivant
@@ -152,6 +186,7 @@ $cartes = recupCbParUser($dbh, $userId);
             </div>
         </div>
     </div>
+
 
     <!-- Etape 3 : Moyen de paiement -->
     <div class="row mt-3 collapse" id="collapsePayment">
@@ -179,8 +214,9 @@ $cartes = recupCbParUser($dbh, $userId);
                                     (Date exp: <?php echo htmlspecialchars($formattedDate); ?>)
                                 </label>
                             </div>
-                        <?php endforeach; ?>
 
+                        <?php endforeach; ?>
+                        <a href="add_card.php">Ajouter une carte</a></p>
                     <?php else : ?>
                         <p>Aucune carte enregistrée. <a href="add_card.php">Ajouter une carte</a></p>
                     <?php endif; ?>
@@ -202,13 +238,14 @@ $cartes = recupCbParUser($dbh, $userId);
                     </div>
                     <div class="card-body">
                         <p><strong>Adresse de livraison :</strong> <span id="reviewAddress"></span></p>
+                        <p><strong>Adresse de facturation :</strong> <span id="reviewFacturationAddress"></span></p>
                         <p><strong>Moyen de paiement :</strong> <span id="reviewCard"></span></p>
-                        <p><strong>Total
-                                :</strong> <?php echo htmlspecialchars(number_format(array_sum(array_map(fn($item) => $item['quantite'] * $item['prix'], $panier)), 2)); ?>
+                        <p><strong>Total :</strong> <?php echo htmlspecialchars(number_format(array_sum(array_map(fn($item) => $item['quantite'] * $item['prix'], $panier)), 2)); ?>
                             € TTC</p>
 
-                        <!-- Champs cachés pour envoyer l'adresse et le paiement sélectionnés -->
+                        <!-- Champs cachés pour envoyer les adresses et le paiement sélectionnés -->
                         <input type="hidden" name="adresse_id" id="hiddenAddress">
+                        <input type="hidden" name="adresse_facturation_id" id="hiddenFacturationAddress">
                         <input type="hidden" name="carte_id" id="hiddenCard">
 
                         <button type="submit" class="btn btn-success">Confirmer la commande</button>
@@ -254,7 +291,7 @@ $cartes = recupCbParUser($dbh, $userId);
         const xhr = new XMLHttpRequest();
         xhr.open("POST", "remove_from_cart_ajax.php", true);
         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        xhr.onreadystatechange = function() {
+        xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
                 location.reload(); // Recharge la page pour actualiser le panier
             }

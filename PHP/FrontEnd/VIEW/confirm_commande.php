@@ -30,7 +30,7 @@ if (!isset($_POST['adresse_id'], $_POST['carte_id']) || empty($_POST['adresse_id
 
 // Récupération des données depuis le formulaire de checkout
 $adresseLivraisonId = $_POST['adresse_id'];
-$adresseFacturationId = $_POST['adresse_id'];
+$adresseFacturationId = $_POST['adresse_facturation_id'];
 $paiementId = $_POST['carte_id']; // ID du moyen de paiement
 $userId = $_SESSION['utilisateur_id']; // Récupéré depuis la session
 
