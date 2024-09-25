@@ -25,39 +25,44 @@ if (isset($_GET['id'])) {
 
 // Traitement du formulaire lorsque le formulaire est soumis
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    echo "Formulaire soumis."; 
     // Récupérer les données du formulaire
     $nom = $_POST['categoryName'] ?? '';
     $description = $_POST['categoryDescription'] ?? '';
     $highlight = isset($_POST['highlightCategory']) ? 1 : 0;
-    $id = $_POST['categoryId'] ?? $id; 
+    $id = $_POST['categoryId'] ?? $id;
 
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        // Chemin vers le dossier où les images seront stockées
-        $targetDir = "../IMAGE/Categorie/";
-        // Récupérer le nom de la catégorie, et le convertir en format "Pantalon"
-        $nomFormat = ucfirst(strtolower($_POST['categoryName'])); // Assurez-vous que $_POST['categoryName'] contient le nom de la catégorie
-        // Nouveau nom de fichier
-        $newFileName = $nomFormat . ".jpg";
-        // Chemin complet de destination
-        $targetFilePath = $targetDir . $newFileName;
+    // Chemin vers le dossier où les images seront stockées
+    $targetDir = "../IMAGE/Categorie/";
+    // Récupérer le nom de la catégorie, et le convertir en format "Pantalon"
+    $nomFormat = ucfirst(strtolower($_POST['categoryName'])); // Assurez-vous que $_POST['categoryName'] contient le nom de la catégorie
+    // Nouveau nom de fichier
+    $newFileName = $nomFormat . ".jpg";
+    // Chemin complet de destination
+    $targetFilePath = $targetDir . $newFileName;
 
-    
-    
-        // Vérifier si un fichier est téléchargé
-        if (isset($_FILES['categoryImage']) && $_FILES['categoryImage']['error'] === UPLOAD_ERR_OK) {
+    // Vérifier si un fichier est téléchargé
+    if (isset($_FILES['categoryImage']) && $_FILES['categoryImage']['error'] === UPLOAD_ERR_OK) {
+        // Vérifier si le fichier est une image
+        $fileType = mime_content_type($_FILES['categoryImage']['tmp_name']);
+        if (strpos($fileType, 'image') === 0) { // Vérifie que le type est une image
             // Déplacer le fichier temporaire à l'endroit voulu avec le nouveau nom
             if (move_uploaded_file($_FILES['categoryImage']['tmp_name'], $targetFilePath)) {
                 echo "L'image de la catégorie a été mise à jour avec succès.<br>";
+
+                // Mettre à jour le chemin de l'image dans la base de données
+                $stmt = $dbh->prepare("UPDATE categorie SET categorie_image = :image WHERE categorie_id = :id");
+                $stmt->bindParam(':image', $targetFilePath);
+                $stmt->bindParam(':id', $id);
+                $stmt->execute();
             } else {
-                echo "Erreur lors du téléchargement de l'image.<br>";
+                echo "Erreur lors du déplacement de l'image.<br>";
             }
         } else {
-            echo "Aucun fichier ou erreur lors du téléchargement.<br>";
+            echo "Le fichier téléchargé n'est pas une image.<br>";
         }
+    } else {
+        echo "Aucun fichier ou erreur lors du téléchargement.<br>";
     }
-    
-
 
     // Mise à jour de la catégorie dans la base de données
     $stmt = $dbh->prepare("UPDATE categorie SET categorie_nom = :nom, categorie_desc = :description, categorie_highlight = :highlight WHERE categorie_id = :id");
@@ -87,62 +92,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <body>
-    <div class="container mt-5">
-        <!-- Lien de retour -->
-        <a href="backoffice-categorie.php" class="text-decoration-none text-dark mb-4 d-inline-flex align-items-center">
-            <i class="bi bi-arrow-left me-2"></i> Retour
-        </a>
+<div class="container mt-5">
+    <!-- Lien de retour -->
+    <a href="backoffice-categorie.php" class="text-decoration-none text-dark mb-4 d-inline-flex align-items-center">
+        <i class="bi bi-arrow-left me-2"></i> Retour
+    </a>
 
-        <h1 class="h2">Modifier Catégorie</h1>
+    <h1 class="h2">Modifier Catégorie</h1>
 
-        <!-- Affichage des messages d'erreur -->
-        <?php if (isset($error)): ?>
-            <div class="alert alert-danger" role="alert">
-                <?php echo $error; ?>
-            </div>
-        <?php endif; ?>
+    <!-- Affichage des messages d'erreur -->
+    <?php if (isset($error)): ?>
+        <div class="alert alert-danger" role="alert">
+            <?php echo $error; ?>
+        </div>
+    <?php endif; ?>
 
-        <!-- Formulaire de modification de catégorie -->
-        <form action="backoffice-cat-modif.php?id=<?php echo $id; ?>" method="post" enctype="multipart/form-data">
+    <!-- Formulaire de modification de catégorie -->
+    <form action="backoffice-cat-modif.php?id=<?php echo $id; ?>" method="post" enctype="multipart/form-data">
 
         <!-- Champ caché pour l'ID de la catégorie -->
         <input type="hidden" name="categoryId" id="categoryId"value="<?php echo htmlspecialchars($id); ?>">
 
-            <!-- Champ Nom de la catégorie -->
-            <div class="mb-3">
-                <label for="categoryName" class="form-label">Nom</label>
-                <input type="text" class="form-control" id="categoryName" name="categoryName" value="<?php echo htmlspecialchars($categorie['categorie_nom']); ?>" maxlength="50" required>
-            </div>
+        <!-- Champ Nom de la catégorie -->
+        <div class="mb-3">
+            <label for="categoryName" class="form-label">Nom</label>
+            <input type="text" class="form-control" id="categoryName" name="categoryName" value="<?php echo htmlspecialchars($categorie['categorie_nom']); ?>" maxlength="50" required>
+        </div>
 
-            <!-- Champ Description de la catégorie -->
-            <div class="mb-3">
-                <label for="categoryDescription" class="form-label">Description de la Catégorie</label>
-                <textarea class="form-control" id="categoryDescription" name="categoryDescription" maxlength="250" rows="3" required><?php echo htmlspecialchars($categorie['categorie_desc']); ?></textarea>
-            </div>
+        <!-- Champ Description de la catégorie -->
+        <div class="mb-3">
+            <label for="categoryDescription" class="form-label">Description de la Catégorie</label>
+            <textarea class="form-control" id="categoryDescription" name="categoryDescription" maxlength="250" rows="3" required><?php echo htmlspecialchars($categorie['categorie_desc']); ?></textarea>
+        </div>
 
-            <!-- Sélecteur de fichier pour l'image -->
-            <div class="mb-3">
-                <label for="categoryImage" class="form-label">Image de la Catégorie (Laissez vide pour conserver l'image actuelle)</label>
-                <input type="file" class="form-control" id="categoryImage" name="categoryImage">
-                <?php if ($categorie['categorie_image']): ?>
-                    <p class="mt-2"><img src="<?php echo htmlspecialchars($categorie['categorie_image']); ?>" alt="Image actuelle" style="max-width: 200px;"></p>
-                <?php endif; ?>
-            </div>
+        <!-- Sélecteur de fichier pour l'image -->
+        <div class="mb-3">
+            <label for="categoryImage" class="form-label">Image de la Catégorie (Laissez vide pour conserver l'image actuelle)</label>
+            <input type="file" class="form-control" id="categoryImage" name="categoryImage">
+            <?php if ($categorie['categorie_image']): ?>
+                <p class="mt-2"><img src="<?php echo htmlspecialchars($categorie['categorie_image']); ?>" alt="Image actuelle" style="max-width: 200px;"></p>
+            <?php endif; ?>
+        </div>
 
-            <!-- Checkbox pour mise en avant -->
-            <div class="form-check form-switch mb-3">
-                <input class="form-check-input" type="checkbox" id="highlightCategory" name="highlightCategory" <?php echo $categorie['categorie_highlight'] ? 'checked' : ''; ?>>
-                <label class="form-check-label" for="highlightCategory">Mettre en avant</label>
-            </div>
+        <!-- Checkbox pour mise en avant -->
+        <div class="form-check form-switch mb-3">
+            <input class="form-check-input" type="checkbox" id="highlightCategory" name="highlightCategory" <?php echo $categorie['categorie_highlight'] ? 'checked' : ''; ?>>
+            <label class="form-check-label" for="highlightCategory">Mettre en avant</label>
+        </div>
 
-
-        <!-- Conservation de l'ID -->
-         <input class="form-check-input" type="hidden" id="highlightCategory" name="highlightCategory"
-
-            <!-- Bouton de validation -->
-            <button type="submit" class="btn btn-primary">Valider</button>
-        </form>
-    </div>
+        <!-- Bouton de validation -->
+        <button type="submit" class="btn btn-primary">Valider</button>
+    </form>
+</div>
 </body>
 
 </html>

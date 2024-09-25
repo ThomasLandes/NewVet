@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
             <div class="mb-3">
                 <label for="message" class="form-label">Message</label>
-                <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                <textarea class="form-control" id="message" name="message" rows="5" required maxlength="300"></textarea>
             </div>
             <button type="submit" class="btn btn-primary">Envoyer</button>
         </form>

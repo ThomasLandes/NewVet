@@ -1,24 +1,30 @@
 <?php
-
+/**
+ * Vérifie si une session est active et l'utilisateur est connecté.
+ *
+ * @return bool Retourne true si l'utilisateur est connecté, sinon false.
+ */
 function verifierSessionActive()
 {
-    // Démarrer la session si elle n'est pas déjà démarrée
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
 
-    // Vérifier si l'utilisateur est connecté
     return isset($_SESSION['utilisateur_id']);
 }
 
+/**
+ * Récupère les informations de l'utilisateur connecté.
+ *
+ * @param PDO $dbh Instance de la connexion PDO à la base de données.
+ * @return array|null Tableau associatif des informations utilisateur ou null si non connecté.
+ */
 function obtenirInfosUtilisateur($dbh)
 {
-    // la session est démarrée
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
 
-    // Vérifier si l'utilisateur est connecté
     if (isset($_SESSION['utilisateur_id'])) {
         $stmt = $dbh->prepare("SELECT utilisateur_id, role_id FROM utilisateur WHERE utilisateur_id = :id");
         $stmt->bindParam(':id', $_SESSION['utilisateur_id'], PDO::PARAM_INT);
@@ -26,78 +32,82 @@ function obtenirInfosUtilisateur($dbh)
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    return null; // L'utilisateur n'est pas connecté
+    return null;
 }
 
+/**
+ * Autorise l'accès uniquement aux utilisateurs de rôle "user" (role_id = 2).
+ * Redirige vers "unauthorized.php" si l'utilisateur n'est pas autorisé.
+ *
+ * @param PDO $dbh Instance de la connexion PDO à la base de données.
+ */
 function autoriserAccesUser($dbh)
 {
-    // Vérifier que la session est active
     verifierSessionActive();
 
-    // Récupérer les infos utilisateur
     $user = obtenirInfosUtilisateur($dbh);
 
-    // Vérifier si le rôle est bien "user" ("user" a un `role_id` de 2)
     if ($user && $user['role_id'] != 2) {
-        // Rediriger vers une page d'erreur ou la page d'accueil si l'utilisateur n'est pas autorisé
         header("Location: unauthorized.php");
         exit();
     }
 }
 
+/**
+ * Autorise uniquement l'accès aux administrateurs (role_id = 1).
+ * Redirige vers "unauthorized.php" si l'utilisateur n'est pas admin ou non connecté.
+ */
 function autoriserOnlyAdmin()
 {
-    // Vérifier que la session est active
     $testConnecte = verifierSessionActive();
+
     if ($testConnecte) {
-        // Récupérer les infos utilisateur
         $userInfo = getUserInfo();
 
-        // Vérifier si le rôle est bien "admin" (assume que "admin" a un `role_id` de 1)
         if ($userInfo['role_id'] != 1) {
-            // Rediriger vers une page d'erreur ou la page d'accueil si l'utilisateur n'est pas autorisé
             header("Location: unauthorized.php");
             exit();
         }
-    }
-    else{
+    } else {
         header("Location: unauthorized.php");
         exit();
     }
 }
 
-
+/**
+ * Récupère les informations de l'utilisateur depuis la session.
+ *
+ * @return array|null Tableau associatif avec 'user_id' et 'role_id' ou null si non connecté.
+ */
 function getUserInfo()
 {
-    // Démarrer la session si elle n'est pas déjà démarrée
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
 
-    // Vérifier si l'utilisateur est connecté
     if (isset($_SESSION['utilisateur_id']) && isset($_SESSION['role_id'])) {
         return [
             'user_id' => $_SESSION['utilisateur_id'],
             'role_id' => $_SESSION['role_id']
         ];
-    } else {
-        // Si l'utilisateur n'est pas connecté, retourner null ou false
-        return null;
     }
+
+    return null;
 }
 
+/**
+ * Vérifie si l'utilisateur est administrateur (role_id = 1).
+ *
+ * @return bool Retourne true si l'utilisateur est administrateur, sinon false.
+ */
 function isAdmin()
 {
-    // Vérifier si la session est active
     if (verifierSessionActive()) {
-        // Récupérer les informations utilisateur
         $userInfo = getUserInfo();
-        
-        // Vérifier si le rôle est administrateur
         return isset($userInfo['role_id']) && $userInfo['role_id'] == 1;
     }
-    
-    // Retourner false si la session n'est pas active
+
     return false;
 }
 
+?>

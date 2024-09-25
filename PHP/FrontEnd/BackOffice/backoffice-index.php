@@ -32,8 +32,8 @@ $categories = $dbh->query("SELECT * FROM categorie")->fetchAll(PDO::FETCH_ASSOC)
 //____________________________________________________________________________________________
 //____________________________________________________________________________________________
 //____________________________________________________________________________________________
-//CARROUSEL ----------------------------------------------------------------------------------
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+/// CARROUSEL ----------------------------------------------------------------------------------
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['carrousel_update'])) {
     // Chemin vers le dossier où les images seront stockées
     $targetDir = "../IMAGE/Accueil/";
 
@@ -42,22 +42,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     foreach ($carouselImages as $key => $carouselImage) {
         if (!empty($_FILES[$carouselImage]['name'])) {
+
             // Renommer l'image en fonction de sa position
-            $newFileName = "image" . ($key + 1) . ".jpeg"; // On peut changer l'extension selon le type de fichier
+            $newFileName = "image" . ($key + 1) . ".jpeg"; // Changer l'extension selon le type de fichier
 
             // Chemin complet de destination
             $targetFilePath = $targetDir . $newFileName;
 
-            // Déplacer le fichier temporaire à l'endroit voulu avec le nouveau nom
-            if (move_uploaded_file($_FILES[$carouselImage]['tmp_name'], $targetFilePath)) {
-                echo "Carrousel " . ($key + 1) . " a été mise à jour avec succès.<br>";
+            // Vérifiez si le fichier est bien uploadé
+            if ($_FILES[$carouselImage]['error'] === UPLOAD_ERR_OK) {
+                // Déplacez le fichier temporaire à l'endroit voulu avec le nouveau nom
+                if (move_uploaded_file($_FILES[$carouselImage]['tmp_name'], $targetFilePath)) {
+                    echo "Carrousel " . ($key + 1) . " a été mise à jour avec succès.<br>";
+                } else {
+                    echo "Erreur lors du déplacement de l'image " . ($key + 1) . ".<br>";
+                }
             } else {
-                echo "Erreur lors du téléchargement de l'image " . ($key + 1) . ".<br>";
+                echo "Erreur lors du téléchargement de l'image " . ($key + 1) . ": " . $_FILES[$carouselImage]['error'] . "<br>";
             }
+        } else {
+            // Aucune image uploadée pour ce champ, donc on ne fait rien
+            echo "Aucune modification pour l'image " . ($key + 1) . ".<br>";
         }
     }
 }
-//CARROUSEL ----------------------------------------------------------------------------------
+// CARROUSEL ----------------------------------------------------------------------------------
+
 //____________________________________________________________________________________________
 //____________________________________________________________________________________________
 //____________________________________________________________________________________________

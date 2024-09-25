@@ -138,7 +138,7 @@ function afficherNavbar($dbh)
 
 
 function BO_afficherNavbar() {
-  echo'
+    echo'
   <div class="container-fluid">
       <div class="row">
         <!-- Navbar verticale avec largeur réduite -->
@@ -192,7 +192,7 @@ function BO_afficherNavbar() {
 
 
 function BO_ContenuDashboardOuverture(){
-  echo '
+    echo '
   <!-- Contenu principal avec largeur ajustée -->
   <main class="col-md-10 col-lg-10 px-md-4">
     <!-- Contenu dynamique du back office -->
@@ -200,7 +200,7 @@ function BO_ContenuDashboardOuverture(){
 }
 
 function BO_ContenuDashboardFermeture(){
-  echo '</div>
+    echo '</div>
   </main>
 </div>
 </div>';
@@ -225,7 +225,7 @@ function BO_headerElementPrint()
 }
 
 function BO_ScriptAjoutSectionMateriau() {
-  echo '<script>
+    echo '<script>
     // Fonction pour ajouter dynamiquement un champ de matériau
     function addMaterialField() {
       const materialContainer = document.getElementById("material-container");
@@ -254,7 +254,7 @@ function BO_ScriptAjoutSectionMateriau() {
       materialContainer.appendChild(newMaterial);
     }';}
 
-    function BO_ScriptAjoutSectionImage() {
+function BO_ScriptAjoutSectionImage() {
     echo '// Fonction pour ajouter dynamiquement un champ d\'image
     function addImageField() {
       const imageContainer = document.getElementById("image-container");
@@ -327,4 +327,3 @@ function afficherFooter()
     ';
 }
 ?>
-

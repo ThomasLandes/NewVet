@@ -14,6 +14,12 @@ $dbh = connexion_bdd();
 $panier = isset($_COOKIE['panier']) ? json_decode($_COOKIE['panier'], true) : array();
 $userId = isset($_SESSION['utilisateur_id']) ? $_SESSION['utilisateur_id'] : null;
 
+if (empty($panier)) {
+    // Si le panier est vide, redirection vers index.php
+    header('Location: index.php');
+    exit();
+}
+
 // Récupérer les adresses et les cartes de paiement de l'utilisateur si connecté
 $adresses = recupUserAdresseParUser($dbh, $userId);
 $cartes = recupCbParUser($dbh, $userId);
@@ -58,6 +64,13 @@ $cartes = recupCbParUser($dbh, $userId);
 <?php afficherNavbar($dbh); ?>
 <div class="container mt-5">
 
+    <?php
+    // Vérifier si le paramètre 'error' est défini dans l'URL et si sa valeur est 'stock'
+    if (isset($_GET['error']) && $_GET['error'] === 'stock') {
+        echo '<div class="alert alert-danger" role="alert">Stock insuffisant pour certains produits.</div>';
+    }
+    ?>
+
     <!-- Etape 1 : Récapitulatif du panier -->
     <div class="row">
         <div class="col">
@@ -76,17 +89,32 @@ $cartes = recupCbParUser($dbh, $userId);
                         </tr>
                         </thead>
                         <tbody>
-                        <?php foreach ($panier as $produit) : ?>
+                        <?php foreach ($panier as $index => $produit) : ?>
                             <tr>
                                 <td><?php echo htmlspecialchars($produit['nom']); ?></td>
-                                <td><?php echo htmlspecialchars($produit['quantite']); ?></td>
+                                <td>
+                                    <input type="number" name="quantite_<?php echo $index; ?>"
+                                           value="<?php echo htmlspecialchars($produit['quantite']); ?>" min="1"
+                                           class="form-control" style="width: 80px; display:inline-block;">
+                                    <button class="btn btn-primary" onclick="updateQuantity(<?php echo $index; ?>)">
+                                        Modifier
+                                    </button>
+                                </td>
                                 <td><?php echo htmlspecialchars(number_format($produit['prix'], 2)); ?> €</td>
-                                <td><?php echo htmlspecialchars(number_format($produit['quantite'] * $produit['prix'], 2)); ?> €</td>
+                                <td><?php echo htmlspecialchars(number_format($produit['quantite'] * $produit['prix'], 2)); ?>
+                                    €
+                                </td>
+                                <td>
+                                    <button class="btn btn-danger" onclick="removeFromCart(<?php echo $index; ?>)">
+                                        Supprimer
+                                    </button>
+                                </td>
                             </tr>
                         <?php endforeach; ?>
                         </tbody>
                     </table>
-                    <button class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#collapseAddress" onclick="hideButton(this)">
+                    <button class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#collapseAddress"
+                            onclick="hideButton(this)">
                         Valider et passer à l'étape suivante
                     </button>
                 </div>
@@ -105,7 +133,8 @@ $cartes = recupCbParUser($dbh, $userId);
                     <?php if (!empty($adresses)) : ?>
                         <?php foreach ($adresses as $adresse) : ?>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="adresse_id" value="<?php echo htmlspecialchars($adresse['adresse_id']); ?>">
+                                <input class="form-check-input" type="radio" name="adresse_id"
+                                       value="<?php echo htmlspecialchars($adresse['adresse_id']); ?>">
                                 <label class="form-check-label">
                                     <?php echo htmlspecialchars($adresse['adresse_prenom']) . ' ' . htmlspecialchars($adresse['adresse_nom']) . ', ' . htmlspecialchars($adresse['adresse_rue']) . ', ' . htmlspecialchars($adresse['adresse_complement']) . ', ' . htmlspecialchars($adresse['adresse_region']) . ', ' . htmlspecialchars($adresse['adresse_ville']) . ', ' . htmlspecialchars($adresse['adresse_pays']); ?>
                                 </label>
@@ -115,7 +144,8 @@ $cartes = recupCbParUser($dbh, $userId);
                     <?php else : ?>
                         <p>Aucune adresse enregistrée. <a href="add_adresse.php">Ajouter une nouvelle adresse</a></p>
                     <?php endif; ?>
-                    <button class="btn btn-primary mt-3" data-bs-toggle="collapse" data-bs-target="#collapsePayment" onclick="hideButton(this)">
+                    <button class="btn btn-primary mt-3" data-bs-toggle="collapse" data-bs-target="#collapsePayment"
+                            onclick="hideButton(this)">
                         Suivant
                     </button>
                 </div>
@@ -134,9 +164,11 @@ $cartes = recupCbParUser($dbh, $userId);
                     <?php if (!empty($cartes)) : ?>
                         <?php foreach ($cartes as $carte) : ?>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="carte_id" value="<?php echo htmlspecialchars($carte['paiement_id']); ?>">
+                                <input class="form-check-input" type="radio" name="carte_id"
+                                       value="<?php echo htmlspecialchars($carte['paiement_id']); ?>">
                                 <label class="form-check-label">
-                                    **** **** **** <?php echo htmlspecialchars(substr($carte['paiement_numero'], -4)); ?>
+                                    **** ****
+                                    **** <?php echo htmlspecialchars(substr($carte['paiement_numero'], -4)); ?>
                                     <?php
                                     // Récupérer et formater la date d'expiration
                                     $expiration = $carte['paiement_date_exp']; // Assurez-vous que cette clé existe
@@ -171,7 +203,9 @@ $cartes = recupCbParUser($dbh, $userId);
                     <div class="card-body">
                         <p><strong>Adresse de livraison :</strong> <span id="reviewAddress"></span></p>
                         <p><strong>Moyen de paiement :</strong> <span id="reviewCard"></span></p>
-                        <p><strong>Total :</strong> <?php echo htmlspecialchars(number_format(array_sum(array_map(fn($item) => $item['quantite'] * $item['prix'], $panier)), 2)); ?> € TTC</p>
+                        <p><strong>Total
+                                :</strong> <?php echo htmlspecialchars(number_format(array_sum(array_map(fn($item) => $item['quantite'] * $item['prix'], $panier)), 2)); ?>
+                            € TTC</p>
 
                         <!-- Champs cachés pour envoyer l'adresse et le paiement sélectionnés -->
                         <input type="hidden" name="adresse_id" id="hiddenAddress">
@@ -188,4 +222,45 @@ $cartes = recupCbParUser($dbh, $userId);
 </div>
 <?php afficherFooter(); ?>
 </body>
+<script>
+    function updateQuantity(index) {
+        const quantity = document.querySelector(`input[name="quantite_${index}"]`).value;
+
+// Vérifier que la quantité est valide
+        if (quantity <= 0) {
+            alert("La quantité doit être supérieure à zéro.");
+            return;
+        }
+
+// Envoi de la requête AJAX
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "update_cart_ajax.php", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                location.reload(); // Recharge la page pour actualiser le panier
+            }
+        };
+        xhr.send(`index=${index}&quantite=${quantity}`);
+    }
+
+    function removeFromCart(index) {
+        // Confirmation de suppression
+        if (!confirm("Voulez-vous vraiment supprimer cet article ?")) {
+            return;
+        }
+
+        // Envoi de la requête AJAX
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "remove_from_cart_ajax.php", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                location.reload(); // Recharge la page pour actualiser le panier
+            }
+        };
+        xhr.send(`index=${index}`);
+    }
+
+</script>
 </html>
