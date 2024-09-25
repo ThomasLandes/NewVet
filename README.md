@@ -1,74 +1,118 @@
-# NewVet
-Site e-commerce | Epreuve finale du BSI Limayrac
-Introduction
 
-Le projet NewVET est une plateforme d'e-commerce dédiée à la mode féminine, conçue pour offrir une expérience d'achat en ligne élégante et rapide. 
+# NEW VET
 
-Le site propose une sélection de vêtements de haute qualité, fabriqués en France, tout en mettant un accent particulier sur l'éthique et le respect de l'environnement. 
+Le projet NewVET est une plateforme d'e-commerce dédiée à la mode féminine, conçue pour offrir une expérience d'achat en ligne élégante et rapide.
+
+Le site propose une sélection de vêtements de haute qualité, fabriqués en France, tout en mettant un accent particulier sur l'éthique et le respect de l'environnement.
 
 Ce projet vise à combiner le luxe et la conscience écologique dans une interface utilisateur moderne et intuitive.
 
 
-Fonctionnalités
-
-Gestion du carrousel d'images : Permet de mettre à jour les images du carrousel de la page d'accueil via un formulaire dans le back-office.
-
-Mise en avant des catégories : Sélectionnez les catégories à mettre en avant sur la page d'accueil.
-
-Gestion des produits "Highlanders" : Choisissez les produits vedettes à afficher sur la page d'accueil.
-
-Navigation dynamique : Une interface utilisateur réactive avec des éléments visuels tels que des icônes, des carrousels et des cartes de produits.
-
-Backend administrable : Un back-office qui permet aux administrateurs de gérer le contenu affiché sur la page d'accueil.
-
-Structure du Projet
 
 
-Le projet est organisé selon une structure MVC simple, avec une séparation claire entre la logique métier, l'interface utilisateur, et la gestion de la base de données.
+## Tester localement
+
+Cloner le projet 
 
 
-Prérequis
+```bash
+  git clone https://github.com/ThomasLandes/NewVet.git
+```
+
+Ce placer dans le dossier PHP du projet
+
+```bash
+  cd newvet/PHP
+```
+
+Installer PHP mailer à cet endroit via le github ou composer
+
+////////////
+
+Utiliser ensuite le script sql le plus récent pour creer et populer votre base de donnée
+
+////////////
+
+Il ne vous reste plus qu'a configurer mail.php en entrant les valeurs pour : 
+
+`$mail->Username`
+, `$mail->Password`
+& ` $mail->setFrom`
+
+le projet est pret à être utilisé. 
 
 
-Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur votre machine :
-
-
-PHP 7.4+
-
-MySQL 5.7+
-
-Apache/Nginx (ou tout autre serveur compatible PHP)
-
-Composer (facultatif, si vous souhaitez gérer des dépendances PHP)
 
 
 
-Installation
-
-Cloner le dépôt :
 
 
-git clone https://github.com/ThomasLandes/newvet.git
+## Fonctionnalités
 
-cd newvet
+Fonctionnalités de base pour un site de ecommerce 
+- En tant que visiteur: 
 
-Configurer la base de données :
+        - possibilité de naviguer sur l'interface , et d'ajouter des produits au panier
+        - Contacter le support via contact.php
 
-
-Creez une BDD puis importez le fichier newvet.sql (ou un fichier similaire) pour créer les tables nécessaires.
-
-Mettez à jour les informations de connexion à la base de données dans fonction/conf.php.
-
-Configurer le serveur :
+- En tant qu'utilisateur
 
 
-Assurez-vous que le serveur pointe vers le dossier PHP\FrontEnd\VIEW pour servir les pages front-end.
+Comme visiteur + 
 
-Configurez les permissions pour permettre le téléchargement d'images dans le dossier image/accueil/.
 
-Utilisation
+        - Gestion de ses données via compte.php (info perso, adresse, carte de paiement)
+        - Possibilité de commander un/plusieurs articles
+        - Suivi et historique de commande depuis la page compte.php
 
-Front-end : Accédez à la page d'accueil via index.php pour voir le site en action.
+- En tant qu'Administrateur
+    
 
-Back-office : Accédez au backoffice/backoffice-index.php pour gérer les images du carrousel, les catégories mises en avant, et les produits "Highlanders".
+Comme Utilisateur + 
+
+        - Accès au backoffice
+        - Gestion Accueil
+        - Gestion Produit
+        - Gestion Categorie
+        - Gestion Materiau
+        - Gestion Commande
+        - Gestion Contact
+
+l'accès au backoffice est sécurisé via autoriserAdminOnly() qui redirige systematiquement => un utilisateur non connecté ET les utilisateurs connectés ayant un role différent de ADMIN 
+
+
+
+
+
+        
+
+
+## Info de fonctionnement 
+
+le mail de reception à l'inscription peut : 
+
+    - subir un problem lié au SMTP, dans ce cas vérifier que la mfa ne pose pas problème sur le compte utilisé
+
+    - finir dans les SPAM, en effet le mail est signalé comme demarchage par la plupart des serveur mail
+
+vous pouvez valider la creation d'un utilisateur directement depuis la BDD. 
+
+**//\\\\**
+
+la commande manque d'optimisation, en tant que visiteur vous etes redirigé vers la connexion/creation de compte, puis vous devez enregistrer vos infos avant de pouvoir passer une commande. 
+
+**//\\\\** 
+
+le panier, géré via cookie est supprimé systematiquement a la deconnexion de l'utilisateur (pas de synchronisation du panier multiplateforme/multisupport)
+
+**//\\\\** 
+
+le systeme de paiement est fictif, il n'y a pas de validation des données de CB, pas de validation par des api bancaire/tier de confiance 
+
+
+
+
+
+
+
 
